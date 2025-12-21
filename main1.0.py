@@ -62,29 +62,36 @@ class App(CTk):
         lbl = MyLbl(self,text = "LogikTalk",size = 30)
         lbl.place(x=405,y=50)
 
+        #
         self.btn_name = MyBtn(self,text = "Enter name", image=USER,command=self.open_name)
         self.btn_name.place(x=400,y=120)
 
+        # button to open icon frame
         self.btn_icon = MyBtn(self,text = "Enter icon", image=CONF, command=self.open_icon)
         self.btn_icon.place(x=400,y=185)
 
+        # button to open frame with chat
         self.btn_chat = MyBtn(self,width=100,text = "Enter chat",)
         self.btn_chat.configure(fg_color= PHLOX,text_color="grey",command=self.open_chat)
         self.btn_chat.place(x=415,y=260)
 
-
+        # frame with name textbox
         self.frame_name = CTkFrame(self,width=350,height=400,fg_color="#342f2f")
         self.frame_name.place(x=-350,y=0)
         label3 = MyLbl(self.frame_name,text="enter your name", size = 20)
         label3.place(x=50,y=100)
+        
+        # Text box name
         self.box_name = CTkEntry(self.frame_name,width=250,height=50,fg_color=BLUE,
                                 corner_radius=25,)
         self.box_name.place(x=50,y=150)
         self.btn_save_name = MyBtn(self.frame_name,text="save name",command = self.save_name)
         self.btn_save_name.place(x=100,y=220)
 
+# frame with pick icon
         self.frame_icon = CTkFrame(self,width=350,height=400,fg_color="#342f2f")
         self.frame_icon.place(x=-350,y=0)
+        # icon place
         r,c = 0,0
         for i in range(1,7):
             if i%2==0:
@@ -97,19 +104,21 @@ class App(CTk):
             
             r += 0.5    
 
-
+# Frame with text for chat
         self.frame_chat = CTkFrame(self,width=600,height=400,fg_color="#342f2f")
         self.frame_chat.place(x=0,y=-400)
         self.all_mess = CTkScrollableFrame(self.frame_chat,width=580,height=300,fg_color="#342f2f")
         self.all_mess.place(x=0,y=0)
 
+# Text box to input message
         self.inp_mess = CTkTextbox(self.frame_chat,width=350,height=50,fg_color=BLUE,corner_radius=25)
         self.inp_mess.place(x=20,y=320)
 
-
+# Button to send message
         self.btn_send_mess = MyBtn(self.frame_chat,width=100,text="send", command=self.send_mess)
         self.btn_send_mess.place(x=400,y=320)
 
+# Open name frame with textbox
     def open_name(self):
         self.new_x = -350 
         def anime():
@@ -119,7 +128,7 @@ class App(CTk):
                 self.after(10,anime)
         anime() 
 
-
+# Close frame with textbox for input user's name
     def close_name(self):
         self.new_x = 0 
         def anime():
@@ -129,11 +138,13 @@ class App(CTk):
                 self.after(10,anime)
         anime() 
 
+# Save user name
     def save_name(self):
         self.USER = self.box_name.get()
         print (self.USER)
         self.close_name()
 
+# Open icon frame
     def open_icon(self):
         self.new_x = -350 
         def anime():
@@ -143,7 +154,7 @@ class App(CTk):
                 self.after(10,anime)
         anime() 
 
-
+# Close icon frame
     def close_icon(self):
         self.new_x = 0 
         def anime():
@@ -153,10 +164,12 @@ class App(CTk):
                 self.after(10,anime)
         anime() 
 
+# Function for save user's icon
     def save_icon(self, i ):
         self.ICON = i
         self.close_icon()
 
+# Function for connecting to the server
     def open_chat(self):
         try:
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -174,6 +187,8 @@ class App(CTk):
                 anime()    
         except: 
             self.lbl.configure(text="error conection")
+    
+# Function for write messages and transform it to server format
     def input_mess(self):
         file = self.sock.makefile("r", encoding="UTF-8", newline="\n")
         while True:
@@ -186,10 +201,13 @@ class App(CTk):
             except:
                 Mess(self.all_mess, "server", 0, "Goodbye", "w")
                 self.after(100, self.close)
+    
+# Function for disconnect from server
     def close(self):
         self.sock.close()
         self.destroy()
 
+# Function for sending a messages
     def send_mess(self):
         mess = self.inp_mess.get("1.0", "end").strip()
         self.inp_mess.delete("1.0", "end")
