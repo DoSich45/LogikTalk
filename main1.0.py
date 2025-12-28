@@ -49,6 +49,10 @@ class App(CTk):
         self.USER = "anonim"
         self.ICON = 0
 
+        # Connection variables
+        self.HOST = "0"
+        self.PORT = 8080
+
         self.geometry("600x400")
         self.configure(fg_color="#4C474B")
         self.title("LogikTalk")
@@ -88,6 +92,22 @@ class App(CTk):
         self.btn_save_name = MyBtn(self.frame_name,text="save name",command = self.save_name)
         self.btn_save_name.place(x=100,y=220)
 
+        # Connection section
+        self.frame_ip = CTkFrame(self, width=600, height=400, fg_color="#1e1e1e")
+        self.frame_ip.place(x=0, y=0)
+
+        # Connection text box
+
+        self.label_connect = MyLbl(master=self.frame_ip, text="LogikTalk")
+        self.label_connect.place(x=260, y=40)
+
+        self.box_port = CTkEntry(self.frame_ip,width=250,height=50,fg_color=BLUE,
+                                corner_radius=25, placeholder_text="Enter Port", placeholder_text_color="#1e1e1e")
+        self.box_port.place(x=190,y=150)
+        self.box_host = CTkEntry(self.frame_ip,width=250,height=50,fg_color=BLUE,
+                                corner_radius=25, placeholder_text="Enter Host", placeholder_text_color="#1e1e1e")
+        self.box_host.place(x=190,y=220)
+
 # frame with pick icon
         self.frame_icon = CTkFrame(self,width=350,height=400,fg_color="#342f2f")
         self.frame_icon.place(x=-350,y=0)
@@ -115,8 +135,19 @@ class App(CTk):
         self.inp_mess.place(x=20,y=320)
 
 # Button to send message
-        self.btn_send_mess = MyBtn(self.frame_chat,width=100,text="send", command=self.send_mess)
+        self.btn_send_mess = MyBtn(self.frame_chat,width=100,text="send", command=self.begin)
         self.btn_send_mess.place(x=400,y=320)
+
+
+    def begin(self):
+        self.PORT = int(self.box_port.get())
+        self.HOST = int(self.box_host.get())
+        self.frame_ip.destroy()
+
+    def start(self):
+        self.HOST = self.inp_host.get()
+        self.PORT = int(self.inp_port.get())
+        self.frame_ip.destroy()
 
 # Open name frame with textbox
     def open_name(self):
@@ -173,7 +204,7 @@ class App(CTk):
     def open_chat(self):
         try:
                 self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.sock.connect(("0.tcp.eu.ngrok.io", 11771))
+                self.sock.connect((f"{self.HOST}.tcp.eu.ngrok.io", self.PORT))
                 self.sock.send(f"{self.USER}|{self.ICON}".encode())
                 Mess(self.all_mess, self.USER, self.ICON, "welcome to chat", "w")
                 input = threading.Thread(target=self.input_mess)
